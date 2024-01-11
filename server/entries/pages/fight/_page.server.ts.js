@@ -6,6 +6,13 @@ const fightersList = [
     name: "couille",
     hp: 175,
     attack: 44
+  },
+  {
+    uuid: "187f52d8-ce5c-44e6-b356-5c6ac37dbf57",
+    id: "8",
+    name: "wartortle",
+    hp: 186,
+    attack: 34
   }
 ];
 const load = ({ url }) => {
