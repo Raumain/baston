@@ -1,8 +1,10 @@
 <script lang="ts">
 	import Pokemon from "$lib/Pokemon.svelte";
 	import type { Pokemon as PType } from "$lib/types";
+	import heart from "$lib/assets/heart.png";
 	import { onMount } from "svelte";
-	export let data: { fighters: Array<PType & { uuid: string; hp: number; attack: number }> };
+	import { invalidate } from "$app/navigation";
+	export let data;
 	const { fighters } = data;
 	let hp = [
 		{ uuid: fighters[0].uuid, hp: fighters[0].hp },
@@ -11,42 +13,53 @@
 	let hurtedClass = [] as { uuid: string; hurted: boolean }[];
 	let winner: PType & { uuid: string; hp: number; attack: number };
 	let isDraw = false;
-	onMount(() => {
-		const interval = setInterval(async () => {
-			fighters.forEach((fighter, index) => {
-				const opponent = index === 0 ? 1 : 0;
-				hp[opponent].hp -= Math.floor(Math.random() * fighter.attack);
-				hurtedClass[index] = {
-					uuid: fighter.uuid,
-					hurted: hurtedClass[index]?.hurted ? false : true
-				};
+
+	const attack = () => {
+		fighters.forEach((fighter, index) => {
+			console.log(hp);
+			const opponent = index === 0 ? 1 : 0;
+			hp[opponent].hp -= Math.floor(Math.random() * fighter.attack);
+			// hurtedClass[index] = {
+			// 	uuid: fighter.uuid,
+			// 	hurted: hurtedClass[index]?.hurted ? false : true
+			// };
+		});
+	};
+
+	const checkWinner = async () => {
+		if (hp[0].hp <= 0) {
+			winner = fighters[1];
+			await fetch(`http://localhost:5173/fight?winner=${winner.uuid}&loser=${fighters[0].uuid}`, {
+				method: "POST"
 			});
-
-			if (hp[0].hp <= 0) {
-				winner = fighters[1];
-				await fetch(`http://localhost:5173/fight?winner=${winner.uuid}&loser=${fighters[0].uuid}`, {
+		} else if (hp[1].hp <= 0) {
+			winner = fighters[0];
+			await fetch(`http://localhost:5173/fight?winner=${winner.uuid}&loser=${fighters[1].uuid}`, {
+				method: "POST"
+			});
+		} else if (hp[0].hp <= 0 && hp[1].hp <= 0) {
+			isDraw = true;
+			await fetch(
+				`http://localhost:5173/fight?&winner=${fighters[0].uuid}&looser=${fighters[1].uuid}&isDraw=true`,
+				{
 					method: "POST"
-				});
-			} else if (hp[1].hp <= 0) {
-				winner = fighters[0];
-				await fetch(`http://localhost:5173/fight?winner=${winner.uuid}&loser=${fighters[1].uuid}`, {
-					method: "POST"
-				});
-			} else if (hp[0].hp <= 0 && hp[1].hp <= 0) {
-				isDraw = true;
-				await fetch(
-					`http://localhost:5173/fight?&winner=${fighters[0].uuid}&looser=${fighters[1].uuid}&isDraw=true`,
-					{
-						method: "POST"
-					}
-				);
-			}
+				}
+			);
+		}
+	};
 
+	onMount(() => {
+		let i = 0
+		const interval = setInterval(async () => {
+			i++;
+			console.log(i);
+			attack();
+			checkWinner();
 			if (hp[0].hp <= 0 || hp[1].hp <= 0) {
+				invalidate("champion:all");
 				clearInterval(interval);
 			}
-		}, 500);
-
+		}, 1000);
 		return () => clearInterval(interval);
 	});
 </script>
@@ -70,7 +83,7 @@
 			{#each fighters as fighter, index}
 				<div class="figther-wrapper">
 					<p>
-						<img src="/src/lib/assets/heart.png" alt="" />
+						<img src={heart} alt="" />
 						{hp[index].hp > 0 ? hp[index].hp : 0}
 					</p>
 					<img
@@ -93,7 +106,6 @@
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-
 	}
 	.new-fight {
 		margin-top: 20px;

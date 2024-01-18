@@ -2,18 +2,19 @@ import fs from "fs";
 import { randomUUID } from "crypto";
 import type { Fighter } from "$lib/types";
 import pokemon from "$lib/data/pokemon.json";
+import { getFightersInformations } from "$lib/helpers";
 
-export function getJsonFile(filename: string) {
+export function getJsonFile<T>(filename: string) {
 	try {
 		const fighters = fs.readFileSync(`src/lib/data/${filename}.json`, "utf8");
-		return JSON.parse(fighters || "[]");
+		return JSON.parse(fighters || "[]") as T[];
 	} catch (e) {
-		return [];
+		return [] as T[];
 	}
 }
 
 export function createFighter(id: string, name: string) {
-	let fighters: Fighter[] = getJsonFile("fightersList");
+	let fighters = getJsonFile<Fighter>("fightersList");
 	if (name === "") {
 		name = pokemon.find((p) => p.id === Number(id))?.name || "";
 	}
@@ -25,7 +26,7 @@ export function createFighter(id: string, name: string) {
 }
 
 export function updateScoreboard(winnerUUID: string, looserUUID: string, isDraw: boolean = false) {
-	const scoreboard: { uuid: string; points: number }[] = getJsonFile("scoreboard");
+	const scoreboard = getJsonFile<{ uuid: string; points: number }>("scoreboard");
 	if (isDraw) {
 		const winner = scoreboard.find((s) => s.uuid === winnerUUID);
 		const looser = scoreboard.find((s) => s.uuid === looserUUID);
@@ -49,8 +50,35 @@ export function saveFightersList(fighters: Fighter[]) {
 	fs.writeFileSync("src/lib/data/fightersList.json", JSON.stringify(fighters));
 }
 
+export function saveScoreboard(scoreboard: { uuid: string; points: number }[]) {
+	fs.writeFileSync("src/lib/data/scoreboard.json", JSON.stringify(scoreboard));
+}
+
+export function saveResults(results: { uuid1: string; uuid2: string; winner: string }[]) {
+	fs.writeFileSync("src/lib/data/results.json", JSON.stringify(results));
+}
+
 export function saveResult(uuid1: string, uuid2: string, winner: string) {
-	let results = getJsonFile("results");
+	let results = getJsonFile<{ uuid1: string; uuid2: string; winner: string }>("results");
 	results = [...results, { uuid1, uuid2, winner }];
 	fs.writeFileSync("src/lib/data/results.json", JSON.stringify(results));
 }
+
+export const getChampion = () => {
+	const fighters = getJsonFile<Fighter>("fightersList");
+	const scoreboard = getJsonFile<{ uuid: string; points: number }>("scoreboard");
+	const champion = scoreboard.sort((a, b) => b.points - a.points);
+	let points = champion[0].points;
+	let championInfo = getFightersInformations(
+		fighters.filter((pokemon) => pokemon.uuid === champion[0].uuid)
+	)[0];
+	champion.forEach((champ) => {
+		if (!championInfo) {
+			championInfo = getFightersInformations(
+				fighters.filter((pokemon) => pokemon.uuid === champ.uuid)
+			)[0];
+			points = champ.points;
+		}
+	});
+	return { ...championInfo, points };
+};

@@ -1,66 +1,54 @@
 <script lang="ts">
 	import Pokemon from "$lib/Pokemon.svelte";
 	import { colorByType } from "$lib/helpers";
-	import type { Pokemon as PType } from "$lib/types";
-	export let data: {
-		fighter: PType & {
-			uuid: string;
-			hp: number;
-			attack: number;
-			name: string;
-		};
-		points: number;
-		history: {
-			opponent: PType & {
-				uuid: string;
-				hp: number;
-				attack: number;
-				name: string;
-			};
-			winner: string;
-		}[];
-	};
+	import crown from "$lib/assets/crown.png";
+	export let data;
 	const { fighter, points, history } = data;
+	console.log(fighter)
+	console.log(history)
+	console.log(points)
 </script>
 
-<div class="fighter-wrapper">
-	<Pokemon pokemon={fighter} />
-	<span
-		class="is-champion"
-		style={`color: ${colorByType[fighter.types[0].type.name].secondary} !important;`}
-	>
-		<img src="/src/lib/assets/crown.png" alt="" />
-		{points}
-	</span>
-</div>
-<div class="history">
-	{#if history.length > 0}
-		<h2>History</h2>
-		{#each history as { opponent, winner }}
-			<div class="history-item">
-				<div class="fighter">
-					<Pokemon pokemon={fighter} />
-					{#if winner === fighter.uuid}
-						<span class="has-win">
-							<img src="/src/lib/assets/crown.png" alt="" />
-							<p>Winner</p>
-						</span>
-					{/if}
+{#if fighter}
+	<div class="fighter-wrapper">
+		<Pokemon pokemon={fighter} />
+		<span
+			class="is-champion"
+			style={`color: ${colorByType[fighter.types[0].type.name].secondary} !important;`}
+		>
+			<img src={crown} alt="" />
+			{points}
+		</span>
+	</div>
+	<div class="history">
+		{#if history.length > 0}
+			<h2>History</h2>
+			{#each history as { opponent, winner }}
+				<div class="history-item">
+					<div class="fighter">
+						<Pokemon pokemon={fighter} />
+						{#if winner === fighter.uuid}
+							<span class="has-win">
+								<img src={crown} alt="" />
+								<p>Winner</p>
+							</span>
+						{/if}
+					</div>
+					<p>vs</p>
+					<div class="opponent">
+						<Pokemon pokemon={opponent} />
+						{#if winner === opponent.uuid}
+							<span class="has-win">
+								<img src={crown} alt="" />
+								<p>Winner</p>
+							</span>
+						{/if}
+					</div>
 				</div>
-				<p>vs</p>
-				<div class="opponent">
-					<Pokemon pokemon={opponent} />
-					{#if winner === opponent.uuid}
-						<span class="has-win">
-							<img src="/src/lib/assets/crown.png" alt="" />
-							<p>Winner</p>
-						</span>
-					{/if}
-				</div>
-			</div>
-		{/each}
-	{/if}
-</div>
+			{/each}
+		{/if}
+	</div>
+{/if}
 
 <style>
 	.fighter-wrapper {
@@ -114,7 +102,7 @@
 			align-items: center;
 			gap: 2px;
 		}
-		& > span > p{
+		& > span > p {
 			font-size: 1.5rem;
 			font-weight: bold;
 			text-transform: capitalize;

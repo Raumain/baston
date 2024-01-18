@@ -1,13 +1,8 @@
 <script lang="ts">
 	import Pokemon from "$lib/Pokemon.svelte";
 	import { colorByType } from "$lib/helpers";
-	import type { Pokemon as PType } from "$lib/types";
-	export let data: {
-		list: Array<{
-			fighter: PType & { uuid: string; hp: number; attack: number; name: string };
-			points: number;
-		}>;
-	};
+	import crown from "$lib/assets/crown.png";
+	export let data;
 	const { list } = data;
 </script>
 
@@ -23,7 +18,7 @@
 					class="is-champion"
 					style={`color: ${colorByType[fighter.fighter.types[0].type.name].secondary} !important;`}
 				>
-					<img src="/src/lib/assets/crown.png" alt="" />
+					<img src={crown} alt="" />
 					{fighter.points}
 				</span>
 			</a>

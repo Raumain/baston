@@ -1,12 +1,11 @@
 import { getFightersInformations } from "$lib/helpers";
-import { getJsonFile } from "$lib/server/fighter";
+import { getChampion, getJsonFile } from "$lib/server/fighter";
 import type { Fighter } from "$lib/types";
 
 export const load = () => {
-	const fightersList: Fighter[] = getJsonFile("fightersList");
+	const fightersList = getJsonFile<Fighter>("fightersList");
 	const fighters = getFightersInformations(fightersList);
-	const scoreboard: { uuid: string; points: number }[] = getJsonFile("scoreboard");
-	const champion = scoreboard.sort((a, b) => b.points - a.points)[0];
+	const champion = getChampion();
 
 	return {
 		fighters,

@@ -1,6 +1,8 @@
 <script lang="ts">
 	import type { Pokemon as PType } from "$lib/types";
 	import { colorByType } from "$lib/helpers";
+	import heart from "$lib/assets/heart.png";
+	import sword from "$lib/assets/sword.png";
 	export let pokemon: PType & { hp: number; attack: number };
 </script>
 
@@ -12,14 +14,14 @@
 	<p>#{pokemon.id}</p>
 	<div>
 		<img src={pokemon.sprites.front_default} alt="" id="img-front" />
-		<p>{ pokemon.name}</p>
+		<p>{pokemon.name}</p>
 		<div class="fighter-info">
 			<span>
-				<img src="/src/lib/assets/heart.png" alt="" />
+				<img src={heart} alt="" />
 				<p>{pokemon.hp}</p>
 			</span>
 			<span>
-				<img src="/src/lib/assets/sword.png" alt="" />
+				<img src={sword} alt="" />
 				<p>{pokemon.attack}</p>
 			</span>
 		</div>

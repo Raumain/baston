@@ -1,3 +1,8 @@
+<script lang="ts">
+	export let data;
+	$: champion = data.champion;
+</script>
+
 <div id="main">
 	<nav>
 		<ul>
@@ -5,6 +10,15 @@
 			<li><a href="/create-fighter" class="fighter-button">Add Fighter</a></li>
 			<li><a href="/fighters-list">Fighters</a></li>
 		</ul>
+		{#if champion.sprites}
+			<span class="champion">
+				<img src={champion.sprites.front_default} alt="champion" />
+				<div>
+					<p>{champion.name}</p>
+					<p>{champion.points}</p>
+				</div>
+			</span>
+		{/if}
 	</nav>
 	<slot />
 </div>
@@ -25,7 +39,7 @@
 		justify-content: center;
 		align-items: center;
 		background: #3343ba;
-		height: 50px;
+		height: 80px;
 		width: 100%;
 	}
 	nav ul {
@@ -57,5 +71,28 @@
 			6px 6px 10px rgb(59, 68, 134),
 			-6px -6px 10px #2231a0;
 		transition: all 0.1s ease-in-out;
+	}
+	.champion {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 60%;
+		margin-right: 10px;
+		padding: 0.3rem;
+		border-radius: 0.3rem;
+		background: #ffde00;
+	}
+
+	.champion img {
+		height: 50px;
+		width: 50px;
+	}
+	.champion div {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+	}
+	.champion div p {
+		margin: 0;
 	}
 </style>

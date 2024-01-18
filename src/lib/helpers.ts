@@ -24,8 +24,8 @@ export const colorByType: { [key: string]: { main: string; secondary: string } }
 
 export const getFightersInformations = (figthersList: Fighter[]) => {
 	const fighters = figthersList
-		.map((fighter) => ({uuid: fighter.uuid, id: fighter.id}))
-		.map(({uuid, id}) => {
+		.map((fighter) => ({ uuid: fighter.uuid, id: fighter.id }))
+		.map(({ uuid, id }) => {
 			const fighter = pokemon.find((p) => String(p.id) === id);
 			if (!fighter) return;
 			return {
@@ -38,3 +38,4 @@ export const getFightersInformations = (figthersList: Fighter[]) => {
 		});
 	return fighters as Array<Pokemon & { uuid: string; hp: number; attack: number; name: string }>;
 };
+

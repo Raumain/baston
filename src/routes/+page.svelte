@@ -1,11 +1,9 @@
 <script lang="ts">
 	import Pokemon from "$lib/Pokemon.svelte";
 	import type { Pokemon as PType } from "$lib/types";
+	import crown from "$lib/assets/crown.png";
 
-	export let data: {
-		fighters: Array<PType & { uuid: string; hp: number; attack: number }>;
-		champion: { uuid: String; points: number } | undefined;
-	};
+	export let data;
 	const { fighters } = data;
 	const { champion } = data;
 	let selectedFighters = [] as string[];
@@ -43,7 +41,7 @@
 				</span>
 				<span class="is-champion">
 					{#if champion?.uuid === fighter.uuid}
-						<img src="/src/lib/assets/crown.png" alt="" />
+						<img src={crown} alt="" />
 						{champion?.points}
 					{/if}
 				</span>

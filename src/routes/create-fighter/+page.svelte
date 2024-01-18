@@ -1,7 +1,5 @@
 <script lang="ts">
-	import type { PokemonType } from "$lib/types";
-
-	export let data: { pokemon: PokemonType };
+	export let data;
 	const { pokemon } = data;
 	let pokemonId = 1;
 	$: pokemonDisplay = pokemon.find((pok) => pok.id === pokemonId)
