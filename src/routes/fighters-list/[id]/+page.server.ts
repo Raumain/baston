@@ -8,7 +8,6 @@ export const load = ({ params, url }) => {
 		const history: { uuid1: string; uuid2: string; winner: string }[] = getJsonFile("results");
 		const points = url.searchParams.get("points");
 		const fighter = fightersList.find((f) => f.uuid === params.id);
-		console.log(fighter);
 		if (!fighter) throw new Error("Fighter not found");
 		const [fighterInfo] = getFightersInformations([fighter]);
 		const h = history

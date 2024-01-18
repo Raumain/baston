@@ -4,9 +4,6 @@
 	import crown from "$lib/assets/crown.png";
 	export let data;
 	const { fighter, points, history } = data;
-	console.log(fighter)
-	console.log(history)
-	console.log(points)
 </script>
 
 {#if fighter}

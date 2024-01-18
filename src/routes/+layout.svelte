@@ -77,7 +77,7 @@
 		justify-content: center;
 		align-items: center;
 		height: 60%;
-		margin-right: 10px;
+		margin-right: 20px;
 		padding: 0.3rem;
 		border-radius: 0.3rem;
 		background: #ffde00;

@@ -16,13 +16,12 @@
 
 	const attack = () => {
 		fighters.forEach((fighter, index) => {
-			console.log(hp);
 			const opponent = index === 0 ? 1 : 0;
 			hp[opponent].hp -= Math.floor(Math.random() * fighter.attack);
-			// hurtedClass[index] = {
-			// 	uuid: fighter.uuid,
-			// 	hurted: hurtedClass[index]?.hurted ? false : true
-			// };
+			hurtedClass[index] = {
+				uuid: fighter.uuid,
+				hurted: hurtedClass[index]?.hurted ? false : true
+			};
 		});
 	};
 
@@ -52,7 +51,6 @@
 		let i = 0
 		const interval = setInterval(async () => {
 			i++;
-			console.log(i);
 			attack();
 			checkWinner();
 			if (hp[0].hp <= 0 || hp[1].hp <= 0) {

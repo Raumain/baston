@@ -2,7 +2,27 @@
 	export let data;
 	const { pokemon } = data;
 	let pokemonId = 1;
-	$: pokemonDisplay = pokemon.find((pok) => pok.id === pokemonId)
+	let pokemonSurname = "";
+	$: pokemonDisplay = pokemon.find((pok) => pok.id === pokemonId);
+
+	function handleRandom() {
+		const newPokemonId = Math.floor(Math.random() * 152) + 1;
+		const shuffleInterval = setInterval(() => {
+			pokemonId = Math.floor(Math.random() * 152) + 1;
+			if (pokemonId === newPokemonId) {
+				fetch("https://api.api-ninjas.com/v1/randomword", {
+					headers: {
+						"X-Api-Key": "nuWHPgabXPFSGBCjyaP+Lg==hYNUmS6u0ekp4RUR"
+					}
+				}).then((res) => {
+					res.json().then((data) => {
+						pokemonSurname = data.word;
+					});
+				});
+				clearInterval(shuffleInterval);
+			}
+		}, 10);
+	}
 </script>
 
 <div class="main">
@@ -25,9 +45,18 @@
 		</div>
 		<div class="form-field">
 			<label for="fighter-surname"> Surname </label>
-			<input type="text" name="fighter-surname" id="fighter-surname" value="" />
+			<input
+				type="text"
+				name="fighter-surname"
+				id="fighter-surname"
+				value={pokemonSurname || ""}
+				on:change={(e) => (pokemonSurname = e.currentTarget.value)}
+			/>
 		</div>
-		<input type="submit" value="Create" />
+		<div class="buttons">
+			<input type="submit" value="Create" />
+			<button type="button" on:click={handleRandom}>Random</button>
+		</div>
 	</form>
 	<div class="pokemon-display">
 		{#if pokemonDisplay}
@@ -37,7 +66,7 @@
 </div>
 
 <style>
-	.main{
+	.main {
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -74,7 +103,15 @@
 		font-size: 1.7rem;
 		font-family: "Pokemon Pixel Font", monospace;
 	}
-	input[type="submit"] {
+	.buttons {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 2rem;
+		width: 100%;
+	}
+	input[type="submit"],
+	button {
 		margin-top: 1rem;
 		padding: 0.5rem 1rem;
 		border: none;

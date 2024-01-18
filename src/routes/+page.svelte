@@ -7,10 +7,20 @@
 	const { fighters } = data;
 	const { champion } = data;
 	let selectedFighters = [] as string[];
+	let randomFighters = [] as string[];
 	async function handleDelete(fighter: PType & { uuid: string; hp: number; attack: number }) {
 		await fetch(`http://localhost:5173/fighters-list?uuid=${fighter.uuid}`, {
 			method: "DELETE"
 		});
+	}
+	function randomFighter() {
+		const fightersToSort = [...fighters];
+		const newFighter = fightersToSort.sort(() => Math.random() - 0.5)[0].uuid;
+		while (randomFighters.includes(newFighter)) {
+			randomFighter();
+		}
+		randomFighters.push(newFighter);
+		return newFighter;
 	}
 </script>
 
@@ -22,13 +32,18 @@
 			<p>Add a fighter !</p>
 		</div>
 	{/if}
-	<a
-		href={`/fight?uuid1=${selectedFighters?.[0]}&uuid2=${selectedFighters?.[1]}`}
-		class="start-fight"
-		aria-disabled={selectedFighters.length !== 2}
-		style={selectedFighters.length !== 2 ? "background: #86815c; cursor:not-allowed;" : ""}
-		>Start the fight !</a
-	>
+	<div class="start-fight-buttons">
+		<a
+			href={`/fight?uuid1=${selectedFighters?.[0]}&uuid2=${selectedFighters?.[1]}`}
+			class="start-fight"
+			aria-disabled={selectedFighters.length !== 2}
+			style={selectedFighters.length !== 2 ? "background: #86815c; cursor:not-allowed;" : ""}
+			>Start the fight !</a
+		>
+		<a href={`/fight?uuid1=${randomFighter()}&uuid2=${randomFighter()}`} class="start-fight"
+			>Random</a
+		>
+	</div>
 	<div class="figthers-wrapper">
 		{#each fighters as fighter}
 			<div
@@ -77,7 +92,16 @@
 		justify-content: center;
 		align-items: center;
 		gap: 2rem;
+		padding: 0.5rem;
 	}
+
+	.start-fight-buttons{
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: 2rem;
+	}
+
 	.start-fight {
 		font-size: 2rem;
 		background: #ffde00;
